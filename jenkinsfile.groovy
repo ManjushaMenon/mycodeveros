@@ -34,13 +34,24 @@ node {
                 }
             }
             */
+                        stage('deliver') {
+                if(env.BRANCH_NAME == 'Developer'){
+                    docker.withRegistry('', 'docker1') {
+                        def myImage=docker.build("manjushamenon/ui:${env.BUILD_ID}")
+                        myImage.push()
+                        myImage.push('dev')
+                    }
+                    build job: 'deploy', parameters: [string(name: 'env', value: 'dev'), string(name: 'tag', value: 'dev')]
+                }
+            }
             stage('deliver') {
                 if(env.BRANCH_NAME == 'master'){
                     docker.withRegistry('', 'docker1') {
                         def myImage=docker.build("manjushamenon/ui:${env.BUILD_ID}")
                         myImage.push()
-                        myImage.push(‘latest’)
+                        myImage.push('latest')
                     }
+                    build job: 'deploy', parameters: [string(name: 'env', value: 'prod'), string(name: 'tag', value: 'latest')]
                 }
             }
         }
