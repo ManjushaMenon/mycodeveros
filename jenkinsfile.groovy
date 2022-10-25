@@ -39,7 +39,7 @@ node {
                     docker.withRegistry('', 'docker1') {
                         def myImage=docker.build("manjushamenon/ui:${env.BUILD_ID}")
                         myImage.push()
-                        myImage.push(‘latest’)
+                        myImage.push('latest')
                     }
                 }
             }
