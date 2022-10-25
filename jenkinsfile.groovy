@@ -1,9 +1,13 @@
+
+def imageRepo = 'manjushamenon/ui'
+def servicePath = 'services/ui/angular'
+
 node {
         stage('cleanup'){
             cleanWs()
         }
         checkout scm
-        dir('services/ui/angular'){
+        dir({servicePath}){
             stage('Dependencies'){
                 docker.image('node:14.16').inside { //creates node in docker then go inside
                     //run these
@@ -35,9 +39,18 @@ node {
             }
             */
             stage('deliver') {
-                if(env.BRANCH_NAME == 'master'){
+                if(env.BRANCH_NAME == 'Developer'){
                     docker.withRegistry('', 'docker1') {
-                        def myImage=docker.build("manjushamenon/ui:${env.BUILD_ID}")
+                        def myImage=docker.build("$imageRepo}:${env.BUILD_ID}")
+                        myImage.push()
+                        myImage.push(dev)
+                    }
+                }
+            }
+            stage('deliver') {
+                if(env.BRANCH_NAME == 'promote'){
+                    docker.withRegistry('', 'docker1') {
+                        def myImage=docker.build("$imageRepo}:${env.BUILD_ID}")
                         myImage.push()
                         myImage.push('latest')
                     }
