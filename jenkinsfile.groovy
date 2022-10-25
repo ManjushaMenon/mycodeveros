@@ -1,5 +1,6 @@
 def imageRepo = 'manjushamenon/ui'
 def servicePath = 'services/ui/angular'
+
 node {
         stage('cleanup'){
             cleanWs()
@@ -49,7 +50,7 @@ node {
             }
             stage('deliver') {
                 if(env.BRANCH_NAME == 'master'){
-                    docker.withRegistry('', 'docker1') {
+                 docker.withRegistry('', 'docker1') {
                         def myImage=docker.build("manjushamenon/ui:${env.BUILD_ID}")
                         myImage.push()
                         myImage.push('latest')
